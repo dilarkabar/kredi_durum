@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sbr
 
 data=pd.read_csv("Top_12_German_Companies.csv")
-def veriyi_tanıma(dataframe,col):
+def data_recognition(dataframe,col):
     print(dataframe.head())
     print("**********************************************************************")
     print(dataframe.tail())
@@ -22,7 +22,7 @@ def veriyi_tanıma(dataframe,col):
     x=dataframe[col].isnull().sum()
     print((x/len(dataframe))*100)
 
-def veri_türü(dataframe,cat=10,car=20):
+def data_type(dataframe,cat=10,car=20):
     cat_col=[col for col in dataframe.columns if dataframe[col].dtypes=="O"]
     num_cat=[col for col in dataframe.columns if dataframe[col].nunique()<cat and
            dataframe[col].dtypes!="O" ]
@@ -41,7 +41,7 @@ def veri_türü(dataframe,cat=10,car=20):
     print(f'cat_but_car: {len(cat_car)}')
     print(f'num_but_cat: {len(num_cat)}')
     return cat_col, num_col, cat_car
-dr=cat_col, num_col, cat_car = veri_türü(data)
+dr=cat_col, num_col, cat_car = data_type(data)
 print(dr)
 
 
@@ -69,25 +69,25 @@ control_outlire(data, "Net Income")
 dr=control_outlire(data, "Net Income")
 print(dr)
 
-def chek_outlier(dataframe,col):
+def check_outlier(dataframe,col):
     lower_limit,high_limit=outlire(dataframe,col)
     if dataframe[(dataframe[col] > high_limit) | (dataframe[col] < lower_limit)].any(axis=None):
         return True
     else:
         return False
-chek_outlier(data, "Net Income")
+check_outlier(data, "Net Income")
 
 
-def baskılama_yöntemi(dataframe, variable):
+def replace_with_thresholds(dataframe, variable):
     lower_limit, higher_limit = outlire(dataframe, variable)
     dataframe.loc[dataframe[variable] < lower_limit, variable] = lower_limit
     dataframe.loc[dataframe[variable] > higher_limit, variable] = higher_limit
     return dataframe
 
-baskılama_yöntemi(data, "Net Income")
-outliers_exist = chek_outlier(data, "Net Income")
+replace_with_thresholds(data, "Net Income")
+outliers_exist = check_outlier(data, "Net Income")
 print(outliers_exist)
-"""
+
 #şirketlerin debt to equity görleşştirme (2017-2024)
 import matplotlib.dates as mdates
 for company in data['Company'].unique():
@@ -105,11 +105,11 @@ for company in data['Company'].unique():
     
 plt.tight_layout()
 plt.show()
-"""
+
 #şirketlerin risk durumlarını belirleme 
 from sklearn.preprocessing import MinMaxScaler, LabelEncoder, StandardScaler, RobustScaler
 
-veriyi_tanıma(data,"Debt to Equity")
+data_recognition(data,"Debt to Equity")
 data["stıtuan"]=np.where(data["Debt to Equity"] >= 1, "High_risk", "low_risk")
 print(data)
 
